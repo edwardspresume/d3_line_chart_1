@@ -160,6 +160,10 @@ export default function LineChart() {
                         .attr('stroke-width', 1.5)
                         .style('opacity', 0);
 
+                    const validData = xrpData.filter(
+                        (d) => d.Date !== undefined
+                    );
+
                     const bisectDate = d3.bisector<DataPoint, Date>(
                         (d) => d.Date
                     ).left;
@@ -178,10 +182,13 @@ export default function LineChart() {
                             const [xCoord] = d3.pointer(event);
                             const x0 = xScale.invert(xCoord);
                             const index = bisectDate(xrpData, x0, 1);
-                            const d0 = xrpData[index - 1];
-                            const d1 = xrpData[index];
-                            const d = x0 - d0.Date > d1.Date - x0 ? d1 : d0;
-
+                            const d0 = validData[index - 1];
+                            const d1 = validData[index];
+                            const d =
+                                x0.valueOf() - d0.Date.valueOf() >
+                                d1.Date.valueOf() - x0.valueOf()
+                                    ? d1
+                                    : d0;
                             const tooltipX = xScale(d.Date);
                             const tooltipY = yScale(d.Close);
 
