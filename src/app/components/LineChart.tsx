@@ -34,6 +34,7 @@ async function fetchAndProcessData(): Promise<DataPoint[]> {
 
 export default function LineChart() {
     const chartContainerRef = useRef<HTMLDivElement>(null);
+    const chartToolTipRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         // Function to fetch and parse data
@@ -145,6 +146,79 @@ export default function LineChart() {
                         .attr('stroke', 'steelblue')
                         .attr('stroke-width', 2)
                         .attr('d', line);
+
+                    const tooltipDiv = d3
+                        .select(chartToolTipRef.current)
+                        .attr('class', 'tooltip')
+                        .style('opacity', 0);
+
+                    const tooltipCircle = svgContainer
+                        .append('circle')
+                        .attr('r', 5)
+                        .attr('fill', 'steelblue')
+                        .attr('stroke', 'white')
+                        .attr('stroke-width', 1.5)
+                        .style('opacity', 0);
+
+                    const bisectDate = d3.bisector<DataPoint, Date>(
+                        (d) => d.Date
+                    ).left;
+
+                    svgContainer
+                        .append('rect')
+                        .attr('width', chartWidth)
+                        .attr('height', chartHeight)
+                        .style('fill', 'none')
+                        .style('pointer-events', 'all')
+                        .on('mouseover', () => {
+                            tooltipDiv.style('display', 'block');
+                            tooltipCircle.style('opacity', 1);
+                        })
+                        .on('mousemove', (event) => {
+                            const [xCoord] = d3.pointer(event);
+                            const x0 = xScale.invert(xCoord);
+                            const index = bisectDate(xrpData, x0, 1);
+                            const d0 = xrpData[index - 1];
+                            const d1 = xrpData[index];
+                            const d = x0 - d0.Date > d1.Date - x0 ? d1 : d0;
+
+                            const tooltipX = xScale(d.Date);
+                            const tooltipY = yScale(d.Close);
+
+                            tooltipDiv
+                                .html(
+                                    `Date: ${d3.timeFormat('%Y-%m-%d')(
+                                        d.Date
+                                    )}<br/>Close: ${d.Close}`
+                                )
+                                .style(
+                                    'left',
+                                    `${
+                                        chartContainerRef.current.getBoundingClientRect()
+                                            .left + tooltipX
+                                    }px`
+                                )
+                                .style(
+                                    'top',
+                                    `${
+                                        chartContainerRef.current.getBoundingClientRect()
+                                            .top + tooltipY
+                                    }px`
+                                )
+                                .style('transform', 'translate(-50%, -100%)') // This centers the tooltip above the circle
+                                .style('opacity', 1);
+
+                            tooltipCircle
+                                .attr('cx', tooltipX)
+                                .attr('cy', tooltipY)
+                                .style('opacity', 1);
+                        })
+                        .on('mouseout', () => {
+                            tooltipDiv
+                                .style('opacity', 0)
+                                .style('display', 'none');
+                            tooltipCircle.style('opacity', 0);
+                        });
                 }
             } catch (error) {
                 console.error('Error fetching the data: ', error);
@@ -157,6 +231,7 @@ export default function LineChart() {
         <>
             <h1 className='text-2xl font-bold'>XRP Closing Price</h1>
             <div ref={chartContainerRef} className='bg-slate-800 rounded'></div>
+            <div ref={chartToolTipRef} className='tooltip'></div>
         </>
     );
 }
