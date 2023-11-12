@@ -5,17 +5,19 @@ const chartMargin = { top: 50, right: 50, bottom: 50, left: 70 };
 const chartWidth = 500 - chartMargin.left - chartMargin.right;
 const chartHeight = 500 - chartMargin.top - chartMargin.bottom;
 
+const randomVolume = () => Math.floor(Math.random() * 1000) + 1;
+
 const sampleData = [
-    { date: new Date(2020, 0, 1), value: 100 },
-    { date: new Date(2020, 0, 2), value: 200 },
-    { date: new Date(2020, 0, 3), value: 300 },
-    { date: new Date(2020, 0, 4), value: 400 },
-    { date: new Date(2020, 0, 5), value: 500 },
-    { date: new Date(2020, 0, 6), value: 600 },
-    { date: new Date(2020, 0, 7), value: 700 },
-    { date: new Date(2020, 0, 8), value: 800 },
-    { date: new Date(2020, 0, 9), value: 900 },
-    { date: new Date(2020, 0, 10), value: 1000 },
+    { date: new Date(2020, 0, 1), volume: randomVolume() },
+    { date: new Date(2020, 0, 2), volume: randomVolume() },
+    { date: new Date(2020, 0, 3), volume: randomVolume() },
+    { date: new Date(2020, 0, 4), volume: randomVolume() },
+    { date: new Date(2020, 0, 5), volume: randomVolume() },
+    { date: new Date(2020, 0, 6), volume: randomVolume() },
+    { date: new Date(2020, 0, 7), volume: randomVolume() },
+    { date: new Date(2020, 0, 8), volume: randomVolume() },
+    { date: new Date(2020, 0, 9), volume: randomVolume() },
+    { date: new Date(2020, 0, 10), volume: randomVolume() },
 ];
 
 export default function LineChart() {
@@ -55,7 +57,7 @@ export default function LineChart() {
             // Define the y-axis scale
             const valueScale = d3
                 .scaleLinear()
-                .domain([0, d3.max(sampleData, (d) => d.value)])
+                .domain([0, d3.max(sampleData, (d) => d.volume)])
                 .range([chartHeight, 0]);
 
             // Draw the x-axis on the chart
@@ -85,6 +87,20 @@ export default function LineChart() {
                 .style('font-size', '16px')
                 .style('font-weight', 'bold')
                 .text('Volume');
+
+            // Draw the line
+            const line = d3
+                .line()
+                .x((d) => timeScale(d.date))
+                .y((d) => valueScale(d.volume));
+
+            svgContainer
+                .append('path')
+                .datum(sampleData)
+                .attr('fill', 'none')
+                .attr('stroke', 'steelblue')
+                .attr('stroke-width', 2)
+                .attr('d', line);
         }
 
         // Any additional rendering logic that needs to update the SVG
