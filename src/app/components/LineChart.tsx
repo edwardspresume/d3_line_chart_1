@@ -83,7 +83,7 @@ export default function LineChart() {
                         .range([chartHeight, 0]);
 
                     // Draw the x-axis on the chart
-                    const xAxis = svgContainer
+                    svgContainer
                         .append('g')
                         .attr('transform', `translate(0,${chartHeight})`)
                         .call(d3.axisBottom(xScale))
@@ -97,7 +97,7 @@ export default function LineChart() {
                         .text('Date');
 
                     // Draw the y-axis on the chart
-                    const yAxis = svgContainer
+                    svgContainer
                         .append('g')
                         .call(d3.axisLeft(yScale))
                         .append('text')
@@ -109,6 +109,28 @@ export default function LineChart() {
                         .style('font-size', '16px')
                         .style('font-weight', 'bold')
                         .text('Closing price');
+
+                    svgContainer
+                        .selectAll('xGrid')
+                        .data(xScale.ticks().slice(1))
+                        .join('line')
+                        .attr('x1', (d) => xScale(d))
+                        .attr('x2', (d) => xScale(d))
+                        .attr('y1', 0)
+                        .attr('y2', chartHeight)
+                        .attr('stroke', 'rgba(255,255,255,0.1)')
+                        .attr('stroke-width', 0.5);
+
+                    svgContainer
+                        .selectAll('yGrid')
+                        .data(yScale.ticks().slice(1))
+                        .join('line')
+                        .attr('x1', 0)
+                        .attr('x2', chartWidth)
+                        .attr('y1', (d) => yScale(d))
+                        .attr('y2', (d) => yScale(d))
+                        .attr('stroke', 'rgba(255,255,255,0.1)')
+                        .attr('stroke-width', 0.5);
 
                     // Draw the line
                     const line = d3
