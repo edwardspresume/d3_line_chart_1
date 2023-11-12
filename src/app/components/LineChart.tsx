@@ -7,6 +7,10 @@ const chartHeight = 500 - chartMargin.top - chartMargin.bottom;
 
 const randomVolume = () => Math.floor(Math.random() * 1000) + 1;
 
+d3.json('XRP-USD.json').then((data) => {
+    console.log(data);
+});
+
 const sampleData = [
     { date: new Date(2020, 0, 1), volume: randomVolume() },
     { date: new Date(2020, 0, 2), volume: randomVolume() },
