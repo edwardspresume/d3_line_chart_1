@@ -192,6 +192,8 @@ export default function LineChart() {
                             const tooltipX = xScale(d.Date);
                             const tooltipY = yScale(d.Close);
 
+                            if (!chartContainerRef.current) return;
+
                             tooltipDiv
                                 .html(
                                     `Date: ${d3.timeFormat('%Y-%m-%d')(
