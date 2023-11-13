@@ -16,7 +16,17 @@ export default function RootLayout({
 }) {
     return (
         <html lang='en'>
-            <body className={inter.className}>{children}</body>
+            <body className={inter.className}>
+                <nav className='flex gap-2 p-4'>
+                    <a href='/' className='border p-1 rounded'>
+                        Line Chart
+                    </a>
+                </nav>
+
+                <main className='grid gap-2 p-2 content-center justify-items-center h-[100vh]'>
+                    {children}
+                </main>
+            </body>
         </html>
     );
 }

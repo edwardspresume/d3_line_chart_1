@@ -1,11 +1,14 @@
 'use client';
 
 import LineChart from './components/LineChart';
+import LineChartRe from './components/LineChartRe';
 
 export default function Home() {
     return (
-        <div className='grid gap-2 p-2 content-center justify-items-center h-[100vh]'>
+        <div className='grid gap-10'>
             <LineChart />
+
+            <LineChartRe />
         </div>
     );
 }

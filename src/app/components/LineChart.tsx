@@ -237,10 +237,11 @@ export default function LineChart() {
         fetchDataAndCreateChart();
     }, []); // Dependency array is empty to ensure effect runs only once
     return (
-        <>
-            <h1 className='text-2xl font-bold'>XRP Closing Price</h1>
+        <div>
+            <h2 className='text-center font-bold text-2xl mb-2'>Line Chart</h2>
+
             <div ref={chartContainerRef} className='bg-slate-800 rounded'></div>
             <div ref={chartToolTipRef} className='tooltip'></div>
-        </>
+        </div>
     );
 }
